@@ -16,17 +16,17 @@ class EventoPage extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: EventosPage(),
+      home: ListarEventosPageView(),
     );
   }
 }
 
-class EventosPage extends StatefulWidget {
+class ListarEventosPageView extends StatefulWidget {
   @override
-  _EventosPageState createState() => _EventosPageState();
+  _ListarEventosPageViewState createState() => _ListarEventosPageViewState();
 }
 
-class _EventosPageState extends State<EventosPage> {
+class _ListarEventosPageViewState extends State<ListarEventosPageView> {
   List<dynamic> _eventos = [];
 
   @override
@@ -129,7 +129,7 @@ class _EventosPageState extends State<EventosPage> {
                   );
                 },
                 child: const Text(
-                  "CadastrarParticipante",
+                  "Mostrar Participantes",
                   style: TextStyle(color: Colors.white),
                 ))
           ],

@@ -5,6 +5,7 @@ import 'package:eventos/Controllers/Participante/RemoverParticipanteController.d
 import 'package:eventos/Views/AtualizarEventoPageView.dart';
 import 'package:eventos/Views/AtualizarParticipantePageView.dart';
 import 'package:eventos/Views/CriarParticipanteView.dart';
+import 'package:eventos/Views/ListarEventosPageView.dart';
 import 'package:flutter/material.dart';
 
 class ListarParticipantesView extends StatefulWidget {
@@ -107,10 +108,14 @@ class ListarParticipantesViewState extends State<ListarParticipantesView> {
                       Colors.white), // Texto do botão branco
                 ),
                 onPressed: () {
-
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ListarEventosPageView(),
+                    ),
+                  );
                 },
                 child: const Text(
-                  "CadastrarParticipante",
+                  "Mostrar Eventos",
                   style: TextStyle(color: Colors.white),
                 ))
           ],

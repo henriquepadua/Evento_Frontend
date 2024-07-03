@@ -132,7 +132,7 @@ class _CriarEventoPageState extends State<CriarEventoPage> {
                           const SnackBar(content: Text('Evento criado com sucesso')),
                         );
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => EventosPage()),
+                          MaterialPageRoute(builder: (context) => ListarEventosPageView()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

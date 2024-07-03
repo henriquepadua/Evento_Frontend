@@ -136,7 +136,7 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
                           const SnackBar(content: Text('Evento atualizado com sucesso')),
                         );
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => EventosPage()),
+                          MaterialPageRoute(builder: (context) => ListarEventosPageView()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
