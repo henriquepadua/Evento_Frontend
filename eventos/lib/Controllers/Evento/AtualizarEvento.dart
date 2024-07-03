@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AtualizarEventoController {
-  Future<void> atualizarEvento(int id) async {
+  Future<bool?> atualizarEvento(int id, String nome, String descricao,
+      bool ativo, String prazoInscricao, String prazoSubmissao) async {
     const String apiUrl = "https://localhost:7148/api/Evento/AtualizarEvento";
 
     final Map<String, String> headers = {
@@ -12,11 +13,11 @@ class AtualizarEventoController {
 
     final Map<String, dynamic> data = {
       "id": id,
-      "nome": "sfsfsfsfdsd",
-      "descricao": "string",
-      "ativo": true,
-      "prazoInscricao": "2024-07-03T01:23:03.882Z",
-      "prazoSubmissao": "2024-07-03T01:23:03.882Z"
+      "nome": nome,
+      "descricao": descricao,
+      "ativo": ativo,
+      "prazoInscricao": prazoInscricao,
+      "prazoSubmissao": prazoSubmissao,
     };
 
     try {
@@ -28,9 +29,9 @@ class AtualizarEventoController {
       );
 
       if (response.statusCode == 200) {
-        print('Evento atualizado com sucesso');
+        return true;
       } else {
-        print('Falha ao atualizar evento: ${response.statusCode} - ${response.reasonPhrase}');
+        return false;
       }
     } catch (e) {
       print('Erro: $e');

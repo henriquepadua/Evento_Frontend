@@ -1,4 +1,5 @@
 import 'package:eventos/Controllers/Evento/ListarEventos.dart';
+import 'package:eventos/Views/AtualizarEventoPage.dart';
 import 'package:eventos/Views/CriarEventoPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -85,7 +86,11 @@ class _EventosPageState extends State<EventosPage> {
   }
 
   void alterarEvento(int id) {
-    // Navegue para a tela de alteração do evento passando o ID do evento
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AtualizaEventoPage(id),
+      ),
+    );
   }
 
   @override
@@ -103,8 +108,7 @@ class _EventosPageState extends State<EventosPage> {
           TextButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => CriarEventoPage()),
+                  MaterialPageRoute(builder: (context) => CriarEventoPage()),
                 );
               },
               child: const Text(
