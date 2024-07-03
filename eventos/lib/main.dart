@@ -1,3 +1,6 @@
+import 'package:eventos/Controllers/Evento/ListarEventos.dart';
+import 'package:eventos/Controllers/Inscricao/Inscricao.dart';
+import 'package:eventos/Controllers/Participante/ListarParticipante.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -56,6 +59,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    ListarInscricoes().ListandoInscricoes(3);
+    super.initState();
+  }
 
   void _incrementCounter() {
     setState(() {
