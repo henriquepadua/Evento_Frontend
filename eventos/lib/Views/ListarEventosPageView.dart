@@ -1,7 +1,8 @@
-import 'package:eventos/Controllers/Evento/ListarEventos.dart';
-import 'package:eventos/Controllers/Evento/RemoverEvento.dart';
-import 'package:eventos/Views/AtualizarEventoPage.dart';
-import 'package:eventos/Views/CriarEventoPage.dart';
+import 'package:eventos/Controllers/Evento/ListarEventosController.dart';
+import 'package:eventos/Controllers/Evento/RemoverEventoController.dart';
+import 'package:eventos/Views/AtualizarEventoPageView.dart';
+import 'package:eventos/Views/CriarEventoPageView.dart';
+import 'package:eventos/Views/ListarParticipantesView.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -65,9 +66,7 @@ class _EventosPageState extends State<EventosPage> {
         listarEventos();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  'Falha ao deletar evento:')),
+          SnackBar(content: Text('Falha ao deletar evento:')),
         );
       }
     } catch (e) {
@@ -109,6 +108,32 @@ class _EventosPageState extends State<EventosPage> {
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ))
         ],
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Colors.blue), // Botão com fundo azul
+                  foregroundColor: MaterialStateProperty.all(
+                      Colors.white), // Texto do botão branco
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ListarParticipantesView(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "CadastrarParticipante",
+                  style: TextStyle(color: Colors.white),
+                ))
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

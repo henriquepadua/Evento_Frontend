@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 class ListarParticipantes {
-  Future<String?> ListandoParticipantes() async {
+  static Future<String?> ListandoParticipantes() async {
     const String apiUrl = "https://localhost:7148/api/Participante/PegarTodosParticipantes";
     final Map<String, String> headers = {
       'Content-Type': 'application/json; charset=UTF-8',

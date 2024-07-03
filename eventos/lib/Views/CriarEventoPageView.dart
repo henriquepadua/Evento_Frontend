@@ -1,18 +1,14 @@
-import 'package:eventos/Controllers/Evento/AtualizarEvento.dart';
-import 'package:eventos/Controllers/Evento/CriarEvento.dart';
-import 'package:eventos/Views/EventoPage.dart';
+import 'package:eventos/Controllers/Evento/CriarEventoController.dart';
+import 'package:eventos/Views/ListarEventosPageView.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Importe a classe CriarEventoController do arquivo apropriado
 
-class AtualizaEventoPage extends StatefulWidget {
-  final int eventoId;
-  AtualizaEventoPage(this.eventoId);
-
+class CriarEventoPage extends StatefulWidget {
   @override
-  _AtualizaEventoPageState createState() => _AtualizaEventoPageState();
+  _CriarEventoPageState createState() => _CriarEventoPageState();
 }
 
-class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
+class _CriarEventoPageState extends State<CriarEventoPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _descricaoController = TextEditingController();
@@ -22,7 +18,7 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
       TextEditingController();
   bool _ativo = true;
 
-  final criarEventoService = AtualizarEventoController();
+  final criarEventoService = CriarEventoController();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +88,7 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
               ),
               TextFormField(
                 controller: _prazoSubmissaoController,
-                decoration: const InputDecoration(labelText: 'Prazo de Submissão'),
+                decoration: InputDecoration(labelText: 'Prazo de Submissão'),
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
@@ -123,8 +119,8 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    criarEventoService.atualizarEvento(
-                      widget.eventoId,
+                    criarEventoService.CriandoEvento(
+                      0,
                       _nomeController.text,
                       _descricaoController.text,
                       _ativo,
@@ -133,20 +129,20 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
                     ).then((success) {
                       if (success == true) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Evento atualizado com sucesso')),
+                          const SnackBar(content: Text('Evento criado com sucesso')),
                         );
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => EventosPage()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Falha ao atualizar evento')),
+                          const SnackBar(content: Text('Falha ao criar evento')),
                         );
                       }
                     });
                   }
                 },
-                child: const Text('Atualizar Evento'),
+                child: const Text('Criar Evento'),
               ),
             ],
           ),
