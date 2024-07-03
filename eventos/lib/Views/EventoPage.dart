@@ -1,4 +1,5 @@
 import 'package:eventos/Controllers/Evento/ListarEventos.dart';
+import 'package:eventos/Controllers/Evento/RemoverEvento.dart';
 import 'package:eventos/Views/AtualizarEventoPage.dart';
 import 'package:eventos/Views/CriarEventoPage.dart';
 import 'package:flutter/material.dart';
@@ -54,19 +55,10 @@ class _EventosPageState extends State<EventosPage> {
   }
 
   Future<void> deletarEvento(int id) async {
-    final String apiUrl = "https://localhost:7148/api/Evento/RemoverEvento/$id";
-
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
     try {
-      var response = await http.delete(
-        Uri.parse(apiUrl),
-        headers: headers,
-      );
+      int? responseBody = await DeletarEventoController.DeletarEvento(id);
 
-      if (response.statusCode == 200) {
+      if (responseBody == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Evento deletado com sucesso')),
         );
@@ -75,7 +67,7 @@ class _EventosPageState extends State<EventosPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'Falha ao deletar evento: ${response.statusCode} - ${response.reasonPhrase}')),
+                  'Falha ao deletar evento:')),
         );
       }
     } catch (e) {
