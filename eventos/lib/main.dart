@@ -3,14 +3,17 @@ import 'dart:io';
 import 'package:eventos/Controllers/Evento/AtualizarEvento.dart';
 import 'package:eventos/Controllers/Evento/CriarEvento.dart';
 import 'package:eventos/Controllers/Evento/ListarEventos.dart';
+import 'package:eventos/Controllers/Evento/RemoverEvento.dart';
 import 'package:eventos/Controllers/Inscricao/Inscricao.dart';
 import 'package:eventos/Controllers/Participante/ListarParticipante.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
-  HttpOverrides.global = MyHttpOverrides();
-  AtualizarEventoController controller = AtualizarEventoController();
-  await controller.atualizarEvento(4);
+  //HttpOverrides.global = MyHttpOverrides();
+  // AtualizarEventoController controller = AtualizarEventoController();
+  // DeletarEventoController deletarcontroller = DeletarEventoController();
+  // await deletarcontroller.DeletarEvento(4); // ID do evento que você quer deletar
+  // await controller.atualizarEvento(4);
   runApp(const MyApp());
 }
 
@@ -78,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
   //   AtualizarEventoController controller = AtualizarEventoController();
   // await controller.atualizarEvento();
-    AtualizarEventoController().atualizarEvento(4);
+    DeletarEventoController().DeletarEvento(5);
     super.initState();
   }
 
