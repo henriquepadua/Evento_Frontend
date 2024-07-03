@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 class ListarInscricoes {
-  Future<String?> ListandoInscricoes(int id) async {
+  static Future<String?> ListandoInscricoes(int id) async {
     final String apiUrl =
         "https://localhost:7148/api/Inscricao/ListarPorEvento?eventoId=$id";
     final Map<String, String> headers = {
