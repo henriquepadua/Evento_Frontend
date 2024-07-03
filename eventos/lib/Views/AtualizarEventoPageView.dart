@@ -67,7 +67,7 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
               ),
               TextFormField(
                 controller: _prazoInscricaoController,
-                decoration: InputDecoration(labelText: 'Prazo de Inscrição'),
+                decoration: const InputDecoration(labelText: 'Prazo de Inscrição'),
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,

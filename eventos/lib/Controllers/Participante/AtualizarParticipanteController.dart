@@ -2,19 +2,23 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class DeletarParticipanteController {
-  static Future<int?> DeletarParticipante(int id) async {
-    final String apiUrl =
-        "https://localhost:7148/api/Participante/DeletaParticipante?id=$id";
+class AtualizarParticipanteController {
+  Future<bool?> atualizarParticipante(int id, String email, String nome, bool ativo) async {
+    const String apiUrl = "https://localhost:7148/api/Participante/AtualizaParticipante";
 
     final Map<String, String> headers = {
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
-    final Map<String, dynamic> data = {"id": id};
+    final Map<String, dynamic> data = {
+      "id": id,
+      "email": email,
+      "nome": nome,
+      "ativo": ativo,
+    };
 
     try {
-      var response = await http.delete(
+      var response = await http.put(
         Uri.parse(apiUrl),
         headers: headers,
         body: jsonEncode(data),
@@ -22,9 +26,9 @@ class DeletarParticipanteController {
       );
 
       if (response.statusCode == 200) {
-        return response.statusCode;
+        return true;
       } else {
-        return -1;
+        return false;
       }
     } catch (e) {
       print('Erro: $e');
