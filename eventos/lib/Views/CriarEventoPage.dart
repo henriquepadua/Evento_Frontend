@@ -111,27 +111,35 @@ class _CriarEventoPageState extends State<CriarEventoPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.black), // Botão com fundo preto
+                  foregroundColor: MaterialStateProperty.all(Colors.white), // Texto do botão branco
+                ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    if (criarEventoService.CriandoEvento(
-                          0,
-                          _nomeController.text,
-                          _descricaoController.text,
-                          _ativo,
-                          _prazoInscricaoController.text,
-                          _prazoSubmissaoController.text,
-                        ) == true) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                'Falha ao deletar evento:')),
-                      );
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => EventoPage()),
-                      );
-                    }
+                    criarEventoService.CriandoEvento(
+                      0,
+                      _nomeController.text,
+                      _descricaoController.text,
+                      _ativo,
+                      _prazoInscricaoController.text,
+                      _prazoSubmissaoController.text,
+                    ).then((success) {
+                      if (success == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Evento criado com sucesso')),
+                        );
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => EventosPage()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Falha ao criar evento')),
+                        );
+                      }
+                    });
                   }
                 },
                 child: const Text('Criar Evento'),

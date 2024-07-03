@@ -13,17 +13,17 @@ class EventoPage extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: EventosPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class EventosPage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _EventosPageState createState() => _EventosPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _EventosPageState extends State<EventosPage> {
   List<dynamic> _eventos = [];
 
   @override
