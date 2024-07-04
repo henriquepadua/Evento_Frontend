@@ -97,7 +97,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
           const SnackBar(content: Text('Inscrição criada com sucesso')),
         );
         listarEventos();
-      } else if(responseBody == 404) {
+      } else if (responseBody == 404) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Esta inscrição já foi realizada')),
         );
@@ -106,7 +106,6 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
           const SnackBar(content: Text('Falha ao criar inscrição')),
         );
       }
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro: $e')),
@@ -136,7 +135,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
     print("ID do evento salvo: $id");
   }
 
-  Future<int?> buscarParticipante(String email) async {
+  Future<bool?> buscarParticipante(String email) async {
     try {
       Map<String, dynamic>? responseBody =
           await BuscarParticipanteController.buscarParticipantePorEmail(email);
@@ -146,10 +145,12 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
       if (responseBody != null) {
         // Processar e usar os dados do participante aqui, se necessário.
         print('Participante encontrado: $responseBody');
+        return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Participante não encontrado')),
         );
+        return false;
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -192,7 +193,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
             onSelected: (value) async {
               String? responseBody = await ListarEventos.ListandoEventos();
               if (responseBody != null) {
-                  _eventos = jsonDecode(responseBody);
+                _eventos = jsonDecode(responseBody);
               }
               setState(() {
                 _statusFiltro = value == "Ativo"
@@ -218,7 +219,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
             onPressed: () async {
               String? responseBody = await ListarEventos.ListandoEventos();
               if (responseBody != null) {
-                  _eventos = jsonDecode(responseBody);
+                _eventos = jsonDecode(responseBody);
               }
               final DateTime? selectedDate = await showDatePicker(
                 context: context,
@@ -240,7 +241,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
             onPressed: () async {
               String? responseBody = await ListarEventos.ListandoEventos();
               if (responseBody != null) {
-                  _eventos = jsonDecode(responseBody);
+                _eventos = jsonDecode(responseBody);
               }
               final DateTime? selectedDate = await showDatePicker(
                 context: context,
@@ -287,7 +288,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                   ),
                 );
               },
-              child: const Text(  
+              child: const Text(
                 "Mostrar Participantes",
                 style: TextStyle(color: Colors.white),
               ),
@@ -364,13 +365,15 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                                                           Color>(Colors.black),
                                                 ),
                                                 onPressed: () async {
-                                                  await buscarParticipante(
-                                                      emailInscricaoParticipante
-                                                          .text);
-                                                  CriarInscricao(evento['id'],
-                                                      participantes);
-                                                  Navigator.of(context)
-                                                      .pop(); // Fecha o diálogo
+                                                  if (await buscarParticipante(
+                                                          emailInscricaoParticipante
+                                                              .text) ==
+                                                      true) {
+                                                    CriarInscricao(evento['id'],
+                                                        participantes);
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                  // Fecha o diálogo
                                                 },
                                                 child: const Text(
                                                   'Inscrever',
@@ -422,29 +425,6 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                                             const Padding(
                                               padding: EdgeInsets.symmetric(
                                                 vertical: 10,
-                                              ),
-                                            ),
-                                            const Row(
-                                              children: [
-                                                Text(
-                                                  'Insira o Nome do Evento',
-                                                ),
-                                              ],
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 5,
-                                              ),
-                                            ),
-                                            TextField(
-                                              controller: nomeInscricaoEvento,
-                                              decoration: const InputDecoration(
-                                                labelText: "Nome Evento",
-                                                labelStyle: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                border: OutlineInputBorder(),
                                               ),
                                             ),
                                           ],
