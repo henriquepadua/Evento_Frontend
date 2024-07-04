@@ -3,17 +3,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CriarInscricaoController {
-  Future<void> criarInscricao(int eventoId, int participanteId) async {
-    final String apiUrl = "https://localhost:7148/api/Inscricao/Inscrever";
+  static Future<int?> criarInscricao(int eventoId, int participanteId) async {
+    const String apiUrl = "https://localhost:7148/api/Inscricao/Inscrever";
 
     final Map<String, String> headers = {
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
     final Map<String, dynamic> data = {
-      "evento_id": eventoId,
-      "participante_id": participanteId,
-      "data": "2024-07-03T03:42:03.898Z", // Adicionei a data de inscrição
+      "eventoId": eventoId,
+      "participanteId": participanteId,
     };
 
     try {
@@ -26,8 +25,11 @@ class CriarInscricaoController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Inscrição criada com sucesso');
+        return response.statusCode;
       } else {
-        print('Falha ao criar inscrição: ${response.statusCode} - ${response.reasonPhrase}');
+        print(
+            'Falha ao criar inscrição: ${response.statusCode} - ${response.reasonPhrase}');
+        return -1;
       }
     } catch (e) {
       print('Erro: $e');

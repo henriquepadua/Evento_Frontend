@@ -1,11 +1,13 @@
 import 'package:eventos/Controllers/Evento/ListarEventosController.dart';
 import 'package:eventos/Controllers/Evento/RemoverEventoController.dart';
+import 'package:eventos/Controllers/Inscricao/CriarInscricaoController.dart';
+import 'package:eventos/Controllers/Participante/BuscaParticipanteController.dart';
 import 'package:eventos/Views/AtualizarEventoPageView.dart';
 import 'package:eventos/Views/CriarEventoPageView.dart';
 import 'package:eventos/Views/ListarParticipantesView.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventoPage extends StatelessWidget {
   @override
@@ -28,6 +30,9 @@ class ListarEventosPageView extends StatefulWidget {
 
 class _ListarEventosPageViewState extends State<ListarEventosPageView> {
   List<dynamic> _eventos = [];
+  var participantes;
+  TextEditingController emailInscricaoParticipante = TextEditingController();
+  TextEditingController nomeInscricaoEvento = TextEditingController();
 
   @override
   void initState() {
@@ -61,12 +66,34 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
 
       if (responseBody == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Evento deletado com sucesso')),
+          const SnackBar(content: Text('Evento deletado com sucesso')),
         );
         listarEventos();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Falha ao deletar evento:')),
+          const SnackBar(content: Text('Falha ao deletar evento:')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e')),
+      );
+    }
+  }
+
+  Future<void> CriarInscricao(int eventoid, int participanteId) async {
+    try {
+      int? responseBody =
+          await CriarInscricaoController.criarInscricao(eventoid, participanteId);
+
+      if (responseBody == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Inscrição criada com sucesso')),
+        );
+        listarEventos();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Falha ao criar inscrição')),
         );
       }
     } catch (e) {
@@ -84,6 +111,34 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
     );
   }
 
+  Future<void> salvarIdEvento(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('idEvento', id);
+    print("ID do evento salvo: $id");
+  }
+
+  Future<int?> buscarParticipante(String email) async {
+    try {
+      Map<String, dynamic>? responseBody =
+          await BuscarParticipanteController.buscarParticipantePorEmail(email);
+
+      participantes = responseBody?['id'];
+
+      if (responseBody != null) {
+        // Processar e usar os dados do participante aqui, se necessário.
+        print('Participante encontrado: $responseBody');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Participante não encontrado')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,22 +146,24 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Center(
-            child: Text(
-          'Eventos',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        )),
+          child: Text(
+            'Eventos',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
         actions: [
           TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => CriarEventoPage()),
-                );
-              },
-              child: const Text(
-                "Criar Evento",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ))
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CriarEventoPage()),
+              );
+            },
+            child: const Text(
+              "Criar Evento",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
       drawer: Drawer(
@@ -115,23 +172,22 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                      Colors.blue), // Botão com fundo azul
-                  foregroundColor: MaterialStateProperty.all(
-                      Colors.white), // Texto do botão branco
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ListarParticipantesView(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  "Mostrar Participantes",
-                  style: TextStyle(color: Colors.white),
-                ))
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ListarParticipantesView(),
+                  ),
+                );
+              },
+              child: const Text(
+                "Mostrar Participantes",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ],
         ),
       ),
@@ -142,32 +198,165 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
           itemBuilder: (context, index) {
             final evento = _eventos[index];
             return Card(
-              margin: EdgeInsets.symmetric(vertical: 8),
+              margin: const EdgeInsets.symmetric(vertical: 8),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      evento['nome'],
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () async {
+                        await salvarIdEvento(evento['id']);
+                      },
+                      child: Text(
+                        evento['nome'],
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text('Descrição: ${evento['descricao']}'),
                     Text('Ativo: ${evento['ativo'] ? 'Sim' : 'Não'}'),
                     Text('Prazo de Inscrição: ${evento['prazoInscricao']}'),
                     Text('Prazo de Submissão: ${evento['prazoSubmissao']}'),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          tooltip: "Criar Inscricao",
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return AlertDialog(
+                                      actions: <Widget>[
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 250,
+                                              child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.black),
+                                                ),
+                                                onPressed: () async {
+                                                  await buscarParticipante(
+                                                      emailInscricaoParticipante
+                                                          .text);
+                                                  CriarInscricao(evento['id'],
+                                                      participantes);
+                                                  // participantes =
+                                                  //     Participante['id'];
+                                                  Navigator.of(context)
+                                                      .pop(); // Fecha o diálogo
+                                                },
+                                                child: const Text(
+                                                  'Inscrever',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                      contentPadding: const EdgeInsets.all(8.0),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 20,
+                                              ),
+                                            ),
+                                            const Row(
+                                              children: [
+                                                Text(
+                                                  'Insira seu Email de Participante',
+                                                ),
+                                              ],
+                                            ),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 5,
+                                              ),
+                                            ),
+                                            TextField(
+                                              controller:
+                                                  emailInscricaoParticipante,
+                                              decoration: const InputDecoration(
+                                                labelText:
+                                                    "Email de Participante",
+                                                labelStyle: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 10,
+                                              ),
+                                            ),
+                                            const Row(
+                                              children: [
+                                                Text(
+                                                  'Insira o Nome do Evento',
+                                                ),
+                                              ],
+                                            ),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 5,
+                                              ),
+                                            ),
+                                            TextField(
+                                              controller: nomeInscricaoEvento,
+                                              decoration: const InputDecoration(
+                                                labelText: "Nome Evento",
+                                                labelStyle: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        IconButton(
+                          tooltip: "Alterar Evento",
+                          icon: const Icon(Icons.edit),
                           onPressed: () => alterarEvento(evento['id']),
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          tooltip: "Deletar Evento",
+                          icon: const Icon(Icons.delete),
                           onPressed: () => deletarEvento(evento['id']),
                         ),
                       ],
@@ -182,15 +371,3 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
     );
   }
 }
-
-
-/*
-IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () => alterarEvento(evento['id']),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => deletarEvento(evento['id']),
-                    ),
-*/

@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:eventos/Controllers/Participante/ListarParticipanteController.dart';
 import 'package:eventos/Controllers/Participante/RemoverParticipanteController.dart';
-import 'package:eventos/Views/AtualizarEventoPageView.dart';
 import 'package:eventos/Views/AtualizarParticipantePageView.dart';
 import 'package:eventos/Views/CriarParticipanteView.dart';
 import 'package:eventos/Views/ListarEventosPageView.dart';
@@ -48,12 +46,12 @@ class ListarParticipantesViewState extends State<ListarParticipantesView> {
 
       if (responseBody == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Participante deletado com sucesso')),
+          const SnackBar(content: Text('Participante deletado com sucesso')),
         );
         listarParticipantes();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Falha ao deletar evento:')),
+          const SnackBar(content: Text('Falha ao deletar evento:')),
         );
       }
     } catch (e) {
@@ -70,6 +68,7 @@ class ListarParticipantesViewState extends State<ListarParticipantesView> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,10 +147,12 @@ class ListarParticipantesViewState extends State<ListarParticipantesView> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
+                          tooltip: "Alterar Participante",
                           icon: const Icon(Icons.edit),
                           onPressed: () => alterarParticipante(participante['id']),
                         ),
                         IconButton(
+                          tooltip: "Deletar Participante",
                           icon: const Icon(Icons.delete),
                           onPressed: () => deletarParticipante(participante['id']),
                         ),

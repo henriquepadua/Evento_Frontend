@@ -50,7 +50,7 @@ class _CriarParticipantePageState extends State<CriarParticipantePage> {
                 },
               ),
               SwitchListTile(
-                title: Text('Ativo'),
+                title: const Text('Ativo'),
                 value: _ativo,
                 onChanged: (bool value) {
                   setState(() {
