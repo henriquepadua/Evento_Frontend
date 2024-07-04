@@ -8,3 +8,6 @@ Para baixar e usar esse projeto Windows: 1- Clone o repositório: Abra um termin
 4- Instalar dependências: Dentro do diretório do projeto, execute: **flutter pub get**
 
 5- Execute o projeto: **flutter run -d chrome**
+
+
+OBS: **É NECESSÁRIO ESTÁ COM A API RODANDO PARA FUNCIONAR OS ENDPOINTS NO FRONTEND**
