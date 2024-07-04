@@ -72,12 +72,16 @@ class _CriarParticipantePageState extends State<CriarParticipantePage> {
                       _nomeController.text,
                       _ativo,
                     ).then((success) {
-                      if (success) {
+                      if (success == 200) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Participante criado com sucesso')),
                         );
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => ListarParticipantesView()),
+                        );
+                      } else if(success == 409){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Email já existe')),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
