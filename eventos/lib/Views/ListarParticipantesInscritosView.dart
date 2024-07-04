@@ -1,6 +1,8 @@
+import 'package:eventos/Controllers/Inscricao/CancelarInscricaoController.dart';
 import 'package:eventos/Controllers/Inscricao/ListarInscritosController.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListarParticipantesInscritosView extends StatefulWidget {
   final int eventoId;
@@ -39,6 +41,28 @@ class _ListarParticipantesInscritosViewState extends State<ListarParticipantesIn
     }
   }
 
+  Future<void> ListarParticipantesInscritos(int participanteId) async {
+    try {
+      int? responseBody =
+          await DeletarInscricaoController.DeletarInscricao(widget.eventoId, participanteId);
+
+      if (responseBody == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Inscrição cancelda com sucesso')),
+        );
+        listarInscricoes();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Falha ao criar inscrição')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +91,19 @@ class _ListarParticipantesInscritosViewState extends State<ListarParticipantesIn
                     ),
                     const SizedBox(height: 8),
                     Text('Email: ${inscricao['email']}'),
-                    // Adicione outras informações relevantes da inscrição aqui
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          tooltip: "Cancelar Inscricao",
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            await ListarParticipantesInscritos(inscricao['id']);
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
