@@ -35,6 +35,11 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
   TextEditingController emailInscricaoParticipante = TextEditingController();
   TextEditingController nomeInscricaoEvento = TextEditingController();
 
+  // Variáveis de filtro
+  String? _statusFiltro;
+  DateTime? _prazoInscricaoFiltro;
+  DateTime? _prazoSubmissaoFiltro;
+
   @override
   void initState() {
     super.initState();
@@ -84,8 +89,8 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
 
   Future<void> CriarInscricao(int eventoid, int participanteId) async {
     try {
-      int? responseBody =
-          await CriarInscricaoController.criarInscricao(eventoid, participanteId);
+      int? responseBody = await CriarInscricaoController.criarInscricao(
+          eventoid, participanteId);
 
       if (responseBody == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -148,6 +153,22 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
     }
   }
 
+  void _filtrarEventos() {
+    setState(() {
+      _eventos = _eventos.where((evento) {
+        bool statusMatch = _statusFiltro == null ||
+            evento['ativo'].toString() == _statusFiltro;
+        bool prazoInscricaoMatch = _prazoInscricaoFiltro == null ||
+            DateTime.parse(evento['prazoInscricao'])
+                .isBefore(_prazoInscricaoFiltro!);
+        bool prazoSubmissaoMatch = _prazoSubmissaoFiltro == null ||
+            DateTime.parse(evento['prazoSubmissao'])
+                .isBefore(_prazoSubmissaoFiltro!);
+        return (statusMatch && prazoInscricaoMatch && prazoSubmissaoMatch);
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,6 +182,75 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
           ),
         ),
         actions: [
+          PopupMenuButton<String>(
+            tooltip: "Status",
+            onSelected: (value) async {
+              String? responseBody = await ListarEventos.ListandoEventos();
+              if (responseBody != null) {
+                  _eventos = jsonDecode(responseBody);
+              }
+              setState(() {
+                _statusFiltro = value == "Ativo"
+                    ? "true"
+                    : value == "Inativo"
+                        ? "false"
+                        : null;
+                _filtrarEventos();
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return ['Todos', 'Ativo', 'Inativo'].map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+          IconButton(
+            tooltip: "Data Inscricao",
+            icon: const Icon(Icons.date_range_outlined),
+            onPressed: () async {
+              String? responseBody = await ListarEventos.ListandoEventos();
+              if (responseBody != null) {
+                  _eventos = jsonDecode(responseBody);
+              }
+              final DateTime? selectedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+              if (selectedDate != null) {
+                setState(() {
+                  _prazoInscricaoFiltro = selectedDate;
+                  _filtrarEventos();
+                });
+              }
+            },
+          ),
+          IconButton(
+            tooltip: "Data Submissão",
+            icon: const Icon(Icons.date_range_outlined),
+            onPressed: () async {
+              String? responseBody = await ListarEventos.ListandoEventos();
+              if (responseBody != null) {
+                  _eventos = jsonDecode(responseBody);
+              }
+              final DateTime? selectedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+              if (selectedDate != null) {
+                setState(() {
+                  _prazoSubmissaoFiltro = selectedDate;
+                  _filtrarEventos();
+                });
+              }
+            },
+          ),
           TextButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -192,7 +282,7 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                   ),
                 );
               },
-              child: const Text(
+              child: const Text(  
                 "Mostrar Participantes",
                 style: TextStyle(color: Colors.white),
               ),
@@ -237,7 +327,8 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                         IconButton(
                           tooltip: "Listar Participantes Inscritos",
                           icon: const Icon(Icons.remove_red_eye),
-                          onPressed: () => ListarParticipantesInscritos(evento['id']),
+                          onPressed: () =>
+                              ListarParticipantesInscritos(evento['id']),
                         ),
                         IconButton(
                           tooltip: "Criar Inscricao",
