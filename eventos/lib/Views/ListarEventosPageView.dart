@@ -4,6 +4,7 @@ import 'package:eventos/Controllers/Inscricao/CriarInscricaoController.dart';
 import 'package:eventos/Controllers/Participante/BuscaParticipanteController.dart';
 import 'package:eventos/Views/AtualizarEventoPageView.dart';
 import 'package:eventos/Views/CriarEventoPageView.dart';
+import 'package:eventos/Views/ListarParticipantesInscritosView.dart';
 import 'package:eventos/Views/ListarParticipantesView.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -107,6 +108,14 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AtualizaEventoPage(id),
+      ),
+    );
+  }
+
+  void ListarParticipantesInscritos(int id) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ListarParticipantesInscritosView(id),
       ),
     );
   }
@@ -226,6 +235,11 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
+                          tooltip: "Listar Participantes Inscritos",
+                          icon: const Icon(Icons.remove_red_eye),
+                          onPressed: () => ListarParticipantesInscritos(evento['id']),
+                        ),
+                        IconButton(
                           tooltip: "Criar Inscricao",
                           icon: const Icon(Icons.add),
                           onPressed: () {
@@ -259,8 +273,6 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
                                                           .text);
                                                   CriarInscricao(evento['id'],
                                                       participantes);
-                                                  // participantes =
-                                                  //     Participante['id'];
                                                   Navigator.of(context)
                                                       .pop(); // Fecha o diálogo
                                                 },

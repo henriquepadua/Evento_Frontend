@@ -28,7 +28,7 @@ class _AtualizaEventoPageState extends State<AtualizaEventoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Criar Evento'),
+        title: const Text('Criar Evento'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
