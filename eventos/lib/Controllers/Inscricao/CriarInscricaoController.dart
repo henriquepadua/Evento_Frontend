@@ -29,7 +29,7 @@ class CriarInscricaoController {
       } else {
         print(
             'Falha ao criar inscrição: ${response.statusCode} - ${response.reasonPhrase}');
-        return -1;
+        return response.statusCode;
       }
     } catch (e) {
       print('Erro: $e');

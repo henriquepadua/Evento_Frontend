@@ -31,7 +31,7 @@ class ListarEventosPageView extends StatefulWidget {
 
 class _ListarEventosPageViewState extends State<ListarEventosPageView> {
   List<dynamic> _eventos = [];
-  var participantes;
+  dynamic participantes;
   TextEditingController emailInscricaoParticipante = TextEditingController();
   TextEditingController nomeInscricaoEvento = TextEditingController();
 
@@ -97,11 +97,16 @@ class _ListarEventosPageViewState extends State<ListarEventosPageView> {
           const SnackBar(content: Text('Inscrição criada com sucesso')),
         );
         listarEventos();
+      } else if(responseBody == 404) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Esta inscrição já foi realizada')),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Falha ao criar inscrição')),
         );
       }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro: $e')),

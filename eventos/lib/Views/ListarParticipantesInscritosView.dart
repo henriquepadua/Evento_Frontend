@@ -66,8 +66,10 @@ class _ListarParticipantesInscritosViewState extends State<ListarParticipantesIn
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: Text('Participantes Inscritos'),
+        backgroundColor: Colors.blue,
+        title: const Text('Participantes Inscritos',style: TextStyle(color: Colors.white),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
